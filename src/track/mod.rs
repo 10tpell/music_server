@@ -10,6 +10,7 @@ mod wav;
 mod mp3;
 mod flac;
 mod aiff;
+mod ogg;
 
 #[derive(PartialEq)]
 struct FileExtensionMapping<'a> {
@@ -21,7 +22,8 @@ struct FileExtensionMapping<'a> {
 pub struct Track {
     pub title: Box<str>,
     pub path: PathBuf,
-    pub duration: u32
+    pub duration: u64,
+    pub artist: Box<str>
 }
 
 pub struct TracksStatus {
@@ -37,12 +39,13 @@ impl TracksStatus {
     }
 }
 
-const TRACK_PATH_LIST: [&str; 3] = ["/Users/tpa779/Music", "Dunnyaga", "/Users/tpa779/Downloads"];
-const TRACK_FILE_EXT_LIST: [FileExtensionMapping; 4] = [
+const TRACK_PATH_LIST: [&str; 3] = ["C:/Users/travis/Music", "Dunnyaga", "C:/Users/travis/Downloads"];
+const TRACK_FILE_EXT_LIST: [FileExtensionMapping; 5] = [
     FileExtensionMapping{ extension: "mp3", extension_handler: mp3::mp3_to_track },
     FileExtensionMapping{extension: "wav", extension_handler: wav::wav_to_track }, 
-    FileExtensionMapping {extension: "flac", extension_handler: flac::flac_to_track}, 
-    FileExtensionMapping{extension: "aiff", extension_handler: aiff::aiff_to_track}
+    FileExtensionMapping{extension: "flac", extension_handler: flac::flac_to_track}, 
+    FileExtensionMapping{extension: "aiff", extension_handler: aiff::aiff_to_track },
+    FileExtensionMapping{extension: "ogg", extension_handler: ogg::ogg_to_track }
 ];
 
 pub fn init() -> Arc<RwLock<TracksStatus>> {

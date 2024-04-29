@@ -1,12 +1,14 @@
 #[macro_use] extern crate rocket;
 use rocket::fs::NamedFile;
+use rocket_dyn_templates::{context, Template};
+
 mod api_handler;
 pub mod db;
 pub mod track;
 
 #[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
+fn index() -> Template {
+    Template::render("index", context! { tracks: db::read_tracks() })
 }
 
 #[get("/play/<track_name>")]
@@ -34,4 +36,5 @@ fn rocket() -> _ {
                    .mount("/", routes![api_handler::music_api::track_status])
                    .mount("/", routes![play_track])
                    .manage(status_list.clone())
+                   .attach(Template::fairing())
 }

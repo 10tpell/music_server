@@ -11,7 +11,7 @@ pub fn wav_to_track(filepath: &PathBuf) -> Option<Track> {
     let wav_option = panic::catch_unwind(|| { 
         match Wav::<i16>::from_path(filepath) {
             Err(error) => {
-                println!("ERROR reading file: {}", error);
+                println!("WAV: ERROR reading file: {}", error);
                 return None;
             }
             Ok(file) => Some(file)
@@ -19,7 +19,7 @@ pub fn wav_to_track(filepath: &PathBuf) -> Option<Track> {
     });
     let wav = match wav_option {
         Err(_) => {
-            println!("ERROR: Panic");
+            println!("WAV: ERROR: Panic");
             return None;
         },
         Ok(file) => match file {
@@ -28,5 +28,6 @@ pub fn wav_to_track(filepath: &PathBuf) -> Option<Track> {
         }
     };
 
-    Some(Track {title: filepath.file_name().unwrap().to_str().unwrap().into(), path: filepath.to_path_buf(), duration: wav.duration()})
+    println!("WAV header: {}", wav.header().to_string());
+    Some(Track {title: filepath.file_name().unwrap().to_str().unwrap().into(), path: filepath.to_path_buf(), duration: wav.duration().into(), artist: "Unkown Artist".into()})
 }

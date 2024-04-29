@@ -1,0 +1,30 @@
+<head>
+    <title> Index </title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+<table>
+    <tr>
+        <th> Index </th>
+        <th> Player </th>
+        <th> Artist </th>
+        <th> Download </th>
+    </tr>
+    {% for track in tracks %}
+        <tr>
+            <td> {{ loop.index }} </td>
+            <td>
+                <audio controls>
+                    <source src="/play/{{ track["title"] }}">
+                </audio>
+            </td>
+            <td> {{ track["artist"] }}
+            <td> <a href="/play/{{ track["title"] }}">{{ track["title"] }}</a> </td>
+        </tr>
+    {% endfor %}
+</table>
+</body>
