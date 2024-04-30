@@ -5,6 +5,7 @@
             border: 1px solid black;
         }
     </style>
+    <meta charset="UTF-8">
 </head>
 <body>
 <table>
@@ -18,7 +19,7 @@
         <tr>
             <td> {{ loop.index }} </td>
             <td>
-                <audio controls>
+                <audio controls preload="none">
                     <source src="/play/{{ track["title"] }}">
                 </audio>
             </td>

@@ -9,19 +9,20 @@ use rocket::State;
 use rocket::futures::{SinkExt, StreamExt};
 use rocket::tokio;
 use rocket::tokio::time::interval;
+use sqlx::PgPool;
 
 
-pub fn get_music(api_path: PathBuf) -> String {
+pub async fn get_music(api_path: PathBuf, pool: &PgPool) -> String {
     match api_path.to_str().unwrap() {
-        "tracks" => music_tracks(),
+        "tracks" => music_tracks(pool).await,
         _ => "music".to_string()
     }
 }
 
-pub fn post_music(api_path: PathBuf, track_status: Arc<RwLock<TracksStatus>>) -> Result<String, String> {
+pub async fn post_music(api_path: PathBuf, track_status: Arc<RwLock<TracksStatus>>, db_pool: &PgPool) -> Result<String, String> {
     match api_path.to_str().unwrap() {
         "tracks/refresh" => {
-            Ok(refresh_tracks(track_status))
+            Ok(refresh_tracks(track_status, db_pool).await)
         },
         _ => {
             println!("API Not found: {}", api_path.display());
@@ -92,14 +93,12 @@ pub fn track_status(ws: ws::WebSocket, track_status: &State<[Arc<RwLock<TracksSt
     }))
 }
 
-fn music_tracks() -> String {
-    let tracks_list = db::read_tracks();
-    serde_json::to_string(&tracks_list).unwrap()
+async fn music_tracks(pool: &PgPool) -> String {
+    let tracks_list = db::read_tracks(pool);
+    serde_json::to_string(&tracks_list.await).unwrap()
 }
 
-fn refresh_tracks(track_status: Arc<RwLock<TracksStatus>>) -> String {
-    std::thread::spawn(|| {
-        db::write_tracks(root::track::get_tracks(track_status))
-    });
+async fn refresh_tracks(track_status: Arc<RwLock<TracksStatus>>, pool: &PgPool) -> String {
+    db::write_tracks(&pool, root::track::get_tracks(track_status)).await;
     "Success".to_string()
 }

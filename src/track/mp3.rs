@@ -37,7 +37,7 @@ pub fn mp3_to_track(filepath: &PathBuf) -> Option<Track> {
         },
         // handle the case where no tag was found
         None => {
-            println!("MP3: didn't find tag, using filename");
+            //println!("MP3: didn't find tag, using filename");
             Some(Track {title: filepath.file_name().unwrap().to_str().unwrap().into(), path: filepath.to_path_buf(), duration: meta.duration.as_secs(), artist: "Unkown Artist".into() })
         }
     }

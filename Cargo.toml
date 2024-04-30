@@ -13,6 +13,8 @@ wavers = "1.4.0"
 mp3-metadata = "0.3.4"
 ws = { package = "rocket_ws", version = "0.1.0" }
 tera = "1.0"
+sqlx = { version = "0.7.1", features = ["postgres", "uuid", "runtime-tokio-rustls"]}
+uuid = "0.8.2"
 
 [dependencies.rocket_dyn_templates]
 version = "0.1.0"
